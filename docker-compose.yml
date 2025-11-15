@@ -71,3 +71,29 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+
+  # Microserviço de Agendamento
+  scheduling-ms:
+    build:
+      context: ./scheduling-ms
+    container_name: scheduling-ms
+    networks:
+      - kong-net
+    environment:
+      - PORT=3000
+    ports:
+      - "3001:3000"
+    restart: unless-stopped
+
+  # Microserviço de Notificação
+  notification-ms:
+    build:
+      context: ./notification-ms
+    container_name: notification-ms
+    networks:
+      - kong-net
+    environment:
+      - PORT=3000
+    ports:
+      - "3002:3000"
+    restart: unless-stopped

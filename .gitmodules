@@ -1,0 +1,6 @@
+[submodule "scheduling-ms"]
+	path = scheduling-ms
+	url = git@github.com:ThiagoLeite06/scheduling-ms.git
+[submodule "notification-ms"]
+	path = notification-ms
+	url = git@github.com:ThiagoLeite06/notification-ms.git
