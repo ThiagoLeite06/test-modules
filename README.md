@@ -4,38 +4,52 @@ Sistema de gerenciamento de clínica médica com arquitetura de microserviços.
 
 ## 🏗️ Arquitetura
 
+Este projeto utiliza **repositórios separados** para cada microserviço (boa prática de microserviços):
+
 - **Kong Gateway**: API Gateway (porta 8000)
-- **Scheduling MS**: Microserviço de agendamento (porta 3001)
-- **Notification MS**: Microserviço de notificações (porta 3002)
+- **Scheduling MS**: Microserviço de agendamento (porta 3001) - [Repositório](https://github.com/ThiagoLeite06/scheduling-ms)
+- **Notification MS**: Microserviço de notificações (porta 3002) - [Repositório](https://github.com/ThiagoLeite06/notification-ms)
+
+## 📁 Estrutura de Pastas
+
+Os repositórios devem estar na seguinte estrutura:
+
+```
+FIAP/modulo03/
+├── med-clinic/          # Este repositório (infra e orquestração)
+├── scheduling-ms/       # Repositório do microserviço de agendamento
+└── notification-ms/     # Repositório do microserviço de notificações
+```
 
 ## 🚀 Começando
 
-### Clonar o projeto
+### 1. Clonar os repositórios
 
 ```bash
-git clone --recurse-submodules git@github.com:SEU_USUARIO/med-clinic.git
+cd /Users/thiagoleite/Developer/FIAP/modulo03/
+
+# Clone o repositório principal
+git clone git@github.com:SEU_USUARIO/med-clinic.git
+
+# Clone os microserviços
+git clone git@github.com:ThiagoLeite06/scheduling-ms.git
+git clone git@github.com:ThiagoLeite06/notification-ms.git
+```
+
+### 2. Iniciar o ambiente
+
+```bash
 cd med-clinic
-```
-
-Se já clonou sem os submódulos:
-
-```bash
-git submodule update --init --recursive
-```
-
-### Iniciar o ambiente
-
-```bash
 chmod +x start.sh stop.sh
 ./start.sh
 ```
 
 Isso vai:
-1. Atualizar os submódulos
+1. Verificar se os microserviços estão nas pastas corretas
 2. Fazer build das aplicações
 3. Subir todos os containers
 
-### Parar o ambiente
+### 3. Parar o ambiente
 
 ```bash
 ./stop.sh
@@ -45,24 +59,24 @@ Isso vai:
 
 ### Ver logs de todos os serviços
 ```bash
-docker-compose logs -f
+docker compose logs -f
 ```
 
 ### Ver logs de um serviço específico
 ```bash
-docker-compose logs -f scheduling-ms
-docker-compose logs -f notification-ms
-docker-compose logs -f kong
+docker compose logs -f scheduling-ms
+docker compose logs -f notification-ms
+docker compose logs -f kong
 ```
 
 ### Reiniciar um serviço
 ```bash
-docker-compose restart scheduling-ms
+docker compose restart scheduling-ms
 ```
 
 ### Rebuild de um serviço
 ```bash
-docker-compose up -d --build scheduling-ms
+docker compose up -d --build scheduling-ms
 ```
 
 ### Entrar no container
@@ -78,42 +92,47 @@ docker exec -it scheduling-ms sh
 - Scheduling MS: http://localhost:3001
 - Notification MS: http://localhost:3002
 
-## 👥 Trabalhando com Submódulos
+## 🛠️ Desenvolvimento
 
-### Atualizar submódulos para a versão mais recente
-```bash
-git submodule update --remote
-```
+### Desenvolvendo os Microserviços
 
-### Fazer alterações em um submódulo
+Cada microserviço é um repositório independente. Para desenvolver:
+
 ```bash
-cd scheduling-ms
-git checkout main
-# faça suas alterações
+# Entre no repositório do microserviço
+cd ../scheduling-ms
+
+# Instale as dependências
+npm install
+
+# Execute em modo de desenvolvimento
+npm run dev
+
+# Faça commits normalmente
 git add .
-git commit -m "sua mensagem"
-git push
-
-# Volte ao repositório principal e atualize a referência
-cd ..
-git add scheduling-ms
-git commit -m "Atualiza referência do scheduling-ms"
+git commit -m "feat: nova funcionalidade"
 git push
 ```
 
-### Atualizar seu ambiente com mudanças de outros devs
+### Atualizando o Ambiente
+
+Quando houver mudanças nos microserviços:
+
 ```bash
+cd ../scheduling-ms
 git pull
-git submodule update --init --recursive
+
+cd ../notification-ms
+git pull
+
+cd ../med-clinic
 ./start.sh
 ```
 
-## 🛠️ Desenvolvimento
+## 💡 Vantagens desta Arquitetura
 
-Para desenvolver localmente sem Docker:
-
-1. Entre no submódulo desejado
-2. Instale as dependências
-3. Execute o projeto normalmente
-
-Os submódulos são repositórios Git independentes e podem ser desenvolvidos separadamente.
+✅ **Independência**: Cada microserviço tem seu próprio repositório e ciclo de vida
+✅ **Deploy independente**: Cada serviço pode ser deployado separadamente
+✅ **Desenvolvimento paralelo**: Times podem trabalhar independentemente
+✅ **Versionamento claro**: Cada serviço tem seu próprio histórico Git
+✅ **CI/CD simplificado**: Pipelines independentes por serviço
